@@ -31,7 +31,6 @@ public class PathModel {
     //
     public List<Path> getPathList(int count) {
         pathList = new ArrayList<>();
-
         for (int i = 0; i < count; i++) {
             Path path = new Path();
             path.moveTo(firstPoint.getCurrentX(), firstPoint.getCurrentY());
