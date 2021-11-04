@@ -130,7 +130,18 @@ public class PointModel {
         centerY = RandomUntil.getNum(100, 1800);
         maxX = RandomUntil.getNum(50, 500);
         maxY = maxX;
-        palstance = RandomUntil.getNum(1, 9)*0.1f;
+        palstance = RandomUntil.getNum(1, 9) * 0.1f;
     }
 
+
+    @Override
+    public String toString() {
+        return "PointModel{" +
+                "centerX=" + centerX +
+                ", centerY=" + centerY +
+                ", maxX=" + maxX +
+                ", maxY=" + maxY +
+                ", palstance=" + palstance +
+                '}';
+    }
 }

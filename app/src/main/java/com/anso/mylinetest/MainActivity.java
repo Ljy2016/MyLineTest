@@ -1,6 +1,7 @@
 package com.anso.mylinetest;
 
 import android.os.Bundle;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 
@@ -29,7 +30,14 @@ public class MainActivity extends AppCompatActivity {
         testSurfaceView = new TestSurfaceView(getApplicationContext());
         // Add the custom surfaceview object to the layout.
         canvasLayout.addView(testSurfaceView);
+        findViewById(R.id.btn_reset).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                testSurfaceView.start();
+            }
+        });
     }
+
     /* Initialise ui controls. */
     private void initControls() {
         // This layout is used to contain custom surfaceview object.
@@ -37,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
             canvasLayout = (LinearLayout) findViewById(R.id.customViewLayout);
         }
     }
-
 
 
 }

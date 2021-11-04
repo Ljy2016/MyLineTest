@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
+import android.graphics.PorterDuff;
 import android.view.SurfaceView;
 import android.view.SurfaceHolder;
 import android.view.animation.LinearInterpolator;
@@ -19,6 +20,7 @@ public class TestSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     private SurfaceHolder surfaceHolder = null;
 
     private Paint paint = null;
+    private Paint txtPaint = null;
 
     private float circleX = 0;
 
@@ -37,12 +39,15 @@ public class TestSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 
         if (paint == null) {
             paint = new Paint();
-
-            paint.setColor(Color.RED);
+            txtPaint = new Paint();
+            txtPaint.setStrokeWidth(25);
+            txtPaint.setTextSize(30);
+            paint.setColor(Color.WHITE);
+            txtPaint.setColor(Color.RED);
         }
 
         // Set the parent view background color. This can not set surfaceview background color.
-//        this.setBackgroundColor(Color.BLUE);
+        this.setBackgroundColor(Color.BLACK);
 
         // Set current surfaceview at top of the view tree.
         this.setZOrderOnTop(true);
@@ -99,9 +104,10 @@ public class TestSurfaceView extends SurfaceView implements SurfaceHolder.Callba
         surfaceHolder.unlockCanvasAndPost(canvas);
     }
 
+    ValueAnimator valueAnimator;
 
     private void startValueAnimator() {
-        ValueAnimator valueAnimator = ValueAnimator.ofFloat(0f, 1f);
+        valueAnimator = ValueAnimator.ofFloat(0f, 1f);
         valueAnimator.setDuration(5 * 1000);
         valueAnimator.setInterpolator(new LinearInterpolator());
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -119,7 +125,8 @@ public class TestSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 
             @Override
             public void onAnimationEnd(Animator animation) {
-
+                drawTxt();
+                pointModelOne = null;
             }
 
             @Override
@@ -140,11 +147,12 @@ public class TestSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     PointModel pointModelTwo;
 
     private void drawPic() {
+        Canvas canvas = surfaceHolder.lockCanvas();
         if (pointModelOne == null) {
             pointModelOne = randomPoint();
             pointModelTwo = randomPoint();
         }
-        Canvas canvas = surfaceHolder.lockCanvas();
+
         int x1, y1, x2, y2;
         x1 = pointModelOne.getCurrentX();
         y1 = pointModelOne.getCurrentY();
@@ -156,6 +164,20 @@ public class TestSurfaceView extends SurfaceView implements SurfaceHolder.Callba
         surfaceHolder.unlockCanvasAndPost(canvas);
     }
 
+    private void drawTxt() {
+        Canvas canvas = surfaceHolder.lockCanvas();
+        if (pointModelOne != null) {
+            canvas.drawText(pointModelOne.toString(), 20, 100, txtPaint);
+            canvas.drawText(pointModelTwo.toString(), 20, 300, txtPaint);
+        }
+        surfaceHolder.unlockCanvasAndPost(canvas);
+    }
+
+    private void drawClear() {
+        Canvas canvas = surfaceHolder.lockCanvas();
+        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+        surfaceHolder.unlockCanvasAndPost(canvas);
+    }
 
     private PointModel generatePointOne() {
         PointModel model = new PointModel(300, 300);
@@ -178,4 +200,11 @@ public class TestSurfaceView extends SurfaceView implements SurfaceHolder.Callba
         return model;
     }
 
+
+    public void start() {
+        if (valueAnimator != null) {
+            drawClear();
+            valueAnimator.start();
+        }
+    }
 }
