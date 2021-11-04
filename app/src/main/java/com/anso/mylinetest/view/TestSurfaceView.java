@@ -1,5 +1,7 @@
 package com.anso.mylinetest.view;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -7,9 +9,12 @@ import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.view.SurfaceView;
 import android.view.SurfaceHolder;
+import android.view.animation.LinearInterpolator;
+
+import com.anso.mylinetest.PointModel;
 
 
-public class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
+public class TestSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
 
     private SurfaceHolder surfaceHolder = null;
 
@@ -19,7 +24,7 @@ public class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Call
 
     private float circleY = 0;
 
-    public CustomSurfaceView(Context context) {
+    public TestSurfaceView(Context context) {
         super(context);
 
         setFocusable(true);
@@ -37,7 +42,7 @@ public class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Call
         }
 
         // Set the parent view background color. This can not set surfaceview background color.
-        this.setBackgroundColor(Color.BLUE);
+//        this.setBackgroundColor(Color.BLUE);
 
         // Set current surfaceview at top of the view tree.
         this.setZOrderOnTop(true);
@@ -47,7 +52,7 @@ public class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Call
 
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
-        drawBall();
+        startValueAnimator();
     }
 
     @Override
@@ -94,27 +99,83 @@ public class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Call
         surfaceHolder.unlockCanvasAndPost(canvas);
     }
 
-    public float getCircleX() {
-        return circleX;
+
+    private void startValueAnimator() {
+        ValueAnimator valueAnimator = ValueAnimator.ofFloat(0f, 1f);
+        valueAnimator.setDuration(5 * 1000);
+        valueAnimator.setInterpolator(new LinearInterpolator());
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+//                animation.getAnimatedValue();
+                drawPic();
+            }
+        });
+        valueAnimator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        valueAnimator.start();
     }
 
-    public void setCircleX(float circleX) {
-        this.circleX = circleX;
+
+    PointModel pointModelOne;
+    PointModel pointModelTwo;
+
+    private void drawPic() {
+        if (pointModelOne == null) {
+            pointModelOne = randomPoint();
+            pointModelTwo = randomPoint();
+        }
+        Canvas canvas = surfaceHolder.lockCanvas();
+        int x1, y1, x2, y2;
+        x1 = pointModelOne.getCurrentX();
+        y1 = pointModelOne.getCurrentY();
+        x2 = pointModelTwo.getCurrentX();
+        y2 = pointModelTwo.getCurrentY();
+        canvas.drawPoint(x1, y1, paint);
+        canvas.drawPoint(x2, y2, paint);
+        canvas.drawLine(x1, y1, x2, y2, paint);
+        surfaceHolder.unlockCanvasAndPost(canvas);
     }
 
-    public float getCircleY() {
-        return circleY;
+
+    private PointModel generatePointOne() {
+        PointModel model = new PointModel(300, 300);
+        model.setMaxX("200");
+        model.setMaxY("200");
+        return model;
     }
 
-    public void setCircleY(float circleY) {
-        this.circleY = circleY;
+    private PointModel generatePointTwo() {
+        PointModel model = new PointModel(600, 1000);
+        model.setMaxX("200");
+        model.setMaxY("200");
+        model.setPalstance("1.5");
+        return model;
     }
 
-    public Paint getPaint() {
-        return paint;
+    private PointModel randomPoint() {
+        PointModel model = new PointModel();
+        model.randomData();
+        return model;
     }
 
-    public void setPaint(Paint paint) {
-        this.paint = paint;
-    }
 }

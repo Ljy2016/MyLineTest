@@ -1,4 +1,5 @@
-package com.anso.mylinetest;//package com.czy.magicline.demo;
+package com.anso.mylinetest;
+//package com.czy.magicline.demo;
 //
 //import android.app.Activity;
 //import android.graphics.Color;

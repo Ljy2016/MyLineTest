@@ -6,6 +6,8 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.widget.Toast;
 
+import com.anso.mylinetest.utils.RandomUntil;
+
 /**
  * 作者：Ljy on 2016/12/14.
  * 邮箱：enjoy_azad@sina.com
@@ -122,5 +124,13 @@ public class PointModel {
         currentY = (int) (maxY * Math.sin(radina) + centerY);
     }
 
+
+    public void randomData() {
+        centerX = RandomUntil.getNum(100, 900);
+        centerY = RandomUntil.getNum(100, 1800);
+        maxX = RandomUntil.getNum(50, 500);
+        maxY = maxX;
+        palstance = RandomUntil.getNum(1, 9)*0.1f;
+    }
 
 }
