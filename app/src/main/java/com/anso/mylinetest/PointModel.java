@@ -24,6 +24,9 @@ public class PointModel {
     private int maxY = 500;
     //弧度变化量（相当于角速度）
     private float palstance = 0.5f;
+
+    private float speedFactor = 1f;
+
     //当前x坐标
     private int currentX;
     //当前y坐标
@@ -115,6 +118,20 @@ public class PointModel {
         return currentY;
     }
 
+
+    public int getCurrentX(float percent) {
+        float arc = (float) (360 * percent * Math.PI / 180) * speedFactor;
+        currentX = (int) (maxX * Math.cos(arc) + centerX);
+        return currentX;
+    }
+
+    public int getCurrentY(float percent) {
+        float arc = (float) (360 * percent * Math.PI / 180) * speedFactor;
+        currentY = (int) (maxY * Math.sin(arc) + centerY);
+        return currentY;
+    }
+
+
     //暂定点进行圆周运动 通过传入的弧度计算出当前点的位置参数currentX，currentY
     public void setCurrentX(float radina) {
         currentX = (int) (maxX * Math.cos(radina) + centerX);
@@ -130,18 +147,25 @@ public class PointModel {
         centerY = RandomUntil.getNum(100, 1800);
         maxX = RandomUntil.getNum(50, 500);
         maxY = maxX;
+        speedFactor = RandomUntil.getNum(5, 50) * 0.1f;
         palstance = RandomUntil.getNum(1, 9) * 0.1f;
     }
 
+    public float getSpeedFactor() {
+        return speedFactor;
+    }
+
+    public void setSpeedFactor(float speedFactor) {
+        this.speedFactor = speedFactor;
+    }
 
     @Override
     public String toString() {
-        return "PointModel{" +
-                "centerX=" + centerX +
+        return "centerX=" + centerX +
                 ", centerY=" + centerY +
                 ", maxX=" + maxX +
                 ", maxY=" + maxY +
-                ", palstance=" + palstance +
+                ", speedFactor=" + speedFactor +
                 '}';
     }
 }

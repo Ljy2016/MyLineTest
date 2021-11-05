@@ -8,6 +8,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
+import android.graphics.Rect;
+import android.util.Log;
 import android.view.SurfaceView;
 import android.view.SurfaceHolder;
 import android.view.animation.LinearInterpolator;
@@ -41,6 +43,7 @@ public class TestSurfaceView extends SurfaceView implements SurfaceHolder.Callba
             paint = new Paint();
             txtPaint = new Paint();
             txtPaint.setStrokeWidth(25);
+//            paint.setStrokeWidth(25);
             txtPaint.setTextSize(30);
             paint.setColor(Color.WHITE);
             txtPaint.setColor(Color.RED);
@@ -107,14 +110,14 @@ public class TestSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     ValueAnimator valueAnimator;
 
     private void startValueAnimator() {
-        valueAnimator = ValueAnimator.ofFloat(0f, 1f);
-        valueAnimator.setDuration(5 * 1000);
+        valueAnimator = ValueAnimator.ofFloat(0f, 6f);
+        valueAnimator.setDuration(15 * 1000);
         valueAnimator.setInterpolator(new LinearInterpolator());
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
 //                animation.getAnimatedValue();
-                drawPic();
+                drawPic((Float) animation.getAnimatedValue());
             }
         });
         valueAnimator.addListener(new Animator.AnimatorListener() {
@@ -146,22 +149,31 @@ public class TestSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     PointModel pointModelOne;
     PointModel pointModelTwo;
 
-    private void drawPic() {
-        Canvas canvas = surfaceHolder.lockCanvas();
+    private void drawPic(float percent) {
+        Log.e("TAG", "drawPic: " + percent);
+
         if (pointModelOne == null) {
             pointModelOne = randomPoint();
             pointModelTwo = randomPoint();
         }
-
+//        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
         int x1, y1, x2, y2;
-        x1 = pointModelOne.getCurrentX();
-        y1 = pointModelOne.getCurrentY();
-        x2 = pointModelTwo.getCurrentX();
-        y2 = pointModelTwo.getCurrentY();
+        x1 = pointModelOne.getCurrentX(percent);
+        y1 = pointModelOne.getCurrentY(percent);
+        x2 = pointModelTwo.getCurrentX(percent);
+        y2 = pointModelTwo.getCurrentY(percent);
+        Canvas canvas = surfaceHolder.lockCanvas();
         canvas.drawPoint(x1, y1, paint);
         canvas.drawPoint(x2, y2, paint);
         canvas.drawLine(x1, y1, x2, y2, paint);
         surfaceHolder.unlockCanvasAndPost(canvas);
+        Canvas canvas2 = surfaceHolder.lockCanvas();
+        canvas2.drawPoint(x1, y1, paint);
+        canvas2.drawPoint(x2, y2, paint);
+        canvas2.drawLine(x1, y1, x2, y2, paint);
+        surfaceHolder.unlockCanvasAndPost(canvas2);
+        Canvas canvas3 = surfaceHolder.lockCanvas(new Rect(0, 0, 0, 0));
+        surfaceHolder.unlockCanvasAndPost(canvas3);
     }
 
     private void drawTxt() {
