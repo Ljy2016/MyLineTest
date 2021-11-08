@@ -142,10 +142,14 @@ public class PointModel {
     }
 
 
-    public void randomData() {
-        centerX = RandomUntil.getNum(100, 900);
+    public void randomData(int centerX) {
+//       this.centerX = RandomUntil.getNum(100, 900);
+        this.centerX = centerX;
         centerY = RandomUntil.getNum(100, 1800);
         maxX = RandomUntil.getNum(50, 500);
+        while (centerX-maxX<0||centerY-maxX<0){
+            maxX = RandomUntil.getNum(50, 500);
+        }
         maxY = maxX;
         speedFactor = RandomUntil.getNum(5, 50) * 0.1f;
         palstance = RandomUntil.getNum(1, 9) * 0.1f;

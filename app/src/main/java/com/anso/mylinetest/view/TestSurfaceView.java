@@ -23,10 +23,12 @@ public class TestSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 
     private Paint paint = null;
     private Paint txtPaint = null;
-
+    private SurfaceListener listener;
     private float circleX = 0;
 
     private float circleY = 0;
+
+    int centerX;
 
     public TestSurfaceView(Context context) {
         super(context);
@@ -112,6 +114,7 @@ public class TestSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     private void startValueAnimator() {
         valueAnimator = ValueAnimator.ofFloat(0f, 6f);
         valueAnimator.setDuration(15 * 1000);
+        valueAnimator.setStartDelay(500);
         valueAnimator.setInterpolator(new LinearInterpolator());
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -129,6 +132,7 @@ public class TestSurfaceView extends SurfaceView implements SurfaceHolder.Callba
             @Override
             public void onAnimationEnd(Animator animation) {
                 drawTxt();
+                listener.finish();
                 pointModelOne = null;
             }
 
@@ -186,9 +190,14 @@ public class TestSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     }
 
     private void drawClear() {
-        Canvas canvas = surfaceHolder.lockCanvas();
-        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-        surfaceHolder.unlockCanvasAndPost(canvas);
+        for (int i = 0; i < 10; i++) {
+            Canvas canvas = surfaceHolder.lockCanvas();
+            canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+            surfaceHolder.unlockCanvasAndPost(canvas);
+        }
+//        Canvas canvas1 = surfaceHolder.lockCanvas();
+//        canvas1.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+//        surfaceHolder.unlockCanvasAndPost(canvas1);
     }
 
     private PointModel generatePointOne() {
@@ -208,15 +217,42 @@ public class TestSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 
     private PointModel randomPoint() {
         PointModel model = new PointModel();
-        model.randomData();
+        model.randomData(centerX);
         return model;
     }
 
 
     public void start() {
         if (valueAnimator != null) {
+            valueAnimator.end();
             drawClear();
             valueAnimator.start();
         }
+    }
+
+    public int getCenterX() {
+        return centerX;
+    }
+
+    public void setCenterX(int centerX) {
+        this.centerX = centerX;
+    }
+
+
+    private void savePic() {
+
+
+    }
+
+    public interface SurfaceListener {
+        void finish();
+    }
+
+    public SurfaceListener getListener() {
+        return listener;
+    }
+
+    public void setListener(SurfaceListener listener) {
+        this.listener = listener;
     }
 }
