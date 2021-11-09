@@ -1,11 +1,5 @@
 package com.anso.mylinetest;
 
-import android.content.Context;
-import android.net.ParseException;
-import android.text.TextUtils;
-import android.util.DisplayMetrics;
-import android.widget.Toast;
-
 import com.anso.mylinetest.utils.RandomUntil;
 
 /**
@@ -151,7 +145,7 @@ public class PointModel {
             maxX = RandomUntil.getNum(50, 500);
         }
         maxY = maxX;
-        speedFactor = RandomUntil.getNum(5, 50) * 0.1f;
+        speedFactor = RandomUntil.getNum(5, 500) * 0.1f;
         palstance = RandomUntil.getNum(1, 9) * 0.1f;
     }
 

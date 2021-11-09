@@ -224,7 +224,6 @@ public class TestSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 
     public void start() {
         if (valueAnimator != null) {
-            valueAnimator.end();
             drawClear();
             valueAnimator.start();
         }

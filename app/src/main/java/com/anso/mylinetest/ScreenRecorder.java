@@ -85,23 +85,34 @@ public class ScreenRecorder extends Service {
         mResultCode = intent.getIntExtra("code", -1);
         Log.e(TAG, "onStartCommand: " + mResultCode);
         mResultData = intent.getParcelableExtra("data");
+//        if (mResultCode == 100) {
+//            isFirst = true;
+//        } else {
         if (mResultData != null) {
             Log.e(TAG, "onStartCommand: 111111");
-            mMediaProjection = mMediaProjectionManager1.getMediaProjection(mResultCode, mResultData);
-            mVirtualDisplay = mMediaProjection.createVirtualDisplay("screen-mirror",
-                    windowWidth, windowHeight, mScreenDensity, DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
-                    mImageReader.getSurface(), null, null);
-
             strDate = System.currentTimeMillis();
             nameImage = pathImage + strDate + ".jpg";
+            if (mMediaProjection == null) {
+                mMediaProjection = mMediaProjectionManager1.getMediaProjection(mResultCode, mResultData);
+
+                mVirtualDisplay = mMediaProjection.createVirtualDisplay("screen-mirror",
+                        windowWidth, windowHeight, mScreenDensity, DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
+                        mImageReader.getSurface(), null, null);
+            }
+            if (!isFirst) {
+                startCapture();
+            }
         }
+//        }
+
+
         return super.onStartCommand(intent, flags, startId);
     }
 
     boolean isFirst = true;
 
     private void createVirtualEnvironment() {
-        pathImage = Environment.getExternalStorageDirectory().getPath() + "/Pictures/";
+        pathImage = Environment.getExternalStorageDirectory().getPath() + "/Pictures/2/";
         mMediaProjectionManager1 = (MediaProjectionManager) getApplication().getSystemService(Context.MEDIA_PROJECTION_SERVICE);
         mWindowManager1 = (WindowManager) getApplication().getSystemService(Context.WINDOW_SERVICE);
         windowWidth = mWindowManager1.getDefaultDisplay().getWidth();
@@ -113,6 +124,7 @@ public class ScreenRecorder extends Service {
         mImageReader.setOnImageAvailableListener(new ImageReader.OnImageAvailableListener() {
             @Override
             public void onImageAvailable(ImageReader imageReader) {
+                Log.e(TAG, "onImageAvailable: " + isFirst);
                 if (isFirst) {
                     startCapture();
                     isFirst = false;

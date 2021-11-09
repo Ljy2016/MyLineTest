@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;
@@ -59,8 +60,17 @@ public class MainActivity extends AppCompatActivity {
         testSurfaceView.setListener(new TestSurfaceView.SurfaceListener() {
             @Override
             public void finish() {
-                mMediaProjectionManager = (MediaProjectionManager) getApplication().getSystemService(Context.MEDIA_PROJECTION_SERVICE);
-                startActivityForResult(mMediaProjectionManager.createScreenCaptureIntent(), REQUEST_MEDIA_PROJECTION);
+                new Handler().postDelayed(new Runnable() {
+                    public void run() {
+                        service.putExtra("code", 100);
+                        startForegroundService(service);
+                    }
+                }, 500);
+                new Handler().postDelayed(new Runnable() {
+                    public void run() {
+                        testSurfaceView.start();
+                    }
+                }, 1500);
             }
         });
         // Add the custom surfaceview object to the layout.
@@ -73,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
         });
         service = new Intent(this, ScreenRecorder.class);
         startForegroundService(service);
+        mMediaProjectionManager = (MediaProjectionManager) getApplication().getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+        startActivityForResult(mMediaProjectionManager.createScreenCaptureIntent(), REQUEST_MEDIA_PROJECTION);
     }
 
     /* Initialise ui controls. */
